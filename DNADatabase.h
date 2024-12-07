@@ -8,6 +8,7 @@
 
 #include "Trie.h"
 #include <string>
+#include <vector>
 
 namespace cs32
 {
@@ -23,14 +24,15 @@ public:
     bool addSequence( std::string sequence );
     // TODO
     bool isValid( std::string sequence ) const;
-    // TODO
     int  countAllGs() const;
     // TODO
     int  size() const;
     // TODO
     int  height() const;
+
 private:
     Trie mTrie;
+    std::vector<std::string> mSequences;
 };
 
 }

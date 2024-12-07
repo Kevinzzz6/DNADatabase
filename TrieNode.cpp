@@ -47,30 +47,28 @@ std::map< char, TrieNode * >::const_iterator TrieNode::find( char c ) const
 // is the character parameter already present in the nextNodeMap of this node?
 bool TrieNode::dataExists( char c ) const
 {
-    bool result = false;
-    return( result );
+    return nextNodeMap.find(c) != nextNodeMap.end();
 }
 
 // TODO
 // set the character parameter into the nextNodeMap of this node
 void TrieNode::setMapNode( char c, TrieNode * node )
 {
-
+    nextNodeMap[c] = node;
 }
 
 // TODO
 // is this TrieNode the end of a word?
 bool TrieNode::isEndOfWord() const
 {
-    bool result = false;
-    return( result );
+    return mEndOfWord;
 }
 
 // TODO
 // set this TrieNode to be the end of a word
 void TrieNode::setEndOfWord()
 {
-
+    mEndOfWord = true;
 }
 
 // stringify this TrieNode and all of its children nodes
@@ -117,9 +115,14 @@ std::string TrieNode::to_string( int indentLevel, char theData ) const
 int  TrieNode::howManyWords() const
 {
     // how many words are found in this TrieNode plus all of its mapnodes?
-    int result =  -1;
-    
-    return( result );
+    int count = (mEndOfWord ? 1 : 0);
+    for(std::map<char, TrieNode*>::const_iterator it = nextNodeMap.begin(); 
+        it != nextNodeMap.end(); ++it) {
+        if(it->second != nullptr) {
+            count += it->second->howManyWords();
+        }
+    }
+    return count;
 }
 
 // TODO
@@ -127,9 +130,14 @@ int  TrieNode::howManyWords() const
 int  TrieNode::howManyNonWords() const
 {
     // how many nonwords are found in this TrieNode plus all of its mapnodes?
-    int result =  -1;
-    
-    return( result );
+    int count = (mEndOfWord ? 0 : 1);
+    for(std::map<char, TrieNode*>::const_iterator it = nextNodeMap.begin(); 
+        it != nextNodeMap.end(); ++it) {
+        if(it->second != nullptr) {
+            count += it->second->howManyNonWords();
+        }
+    }
+    return count;
 }
 
 // TODO
@@ -139,9 +147,14 @@ int  TrieNode::size() const
 {
     // how many TrieNodes are found in this TrieNode plus all of its mapnodes?
     // remember one for itself
-    int result =  -1;
-    
-    return( result );
+    int count = 1;
+    for(std::map<char, TrieNode*>::const_iterator it = nextNodeMap.begin(); 
+        it != nextNodeMap.end(); ++it) {
+        if(it->second != nullptr) {
+            count += it->second->size();
+        }
+    }
+    return count;
 }
 
 // TODO
@@ -150,9 +163,21 @@ int  TrieNode::size() const
 int  TrieNode::height() const
 {
     // what is the longest path to a leaf node from here?
-    int result = -1;
-    
-    return( result );
+    if (nextNodeMap.empty()) {
+        return 0;
+    }
+
+    int max = 0;
+    for(std::map<char, TrieNode*>::const_iterator it = nextNodeMap.begin(); 
+        it != nextNodeMap.end(); ++it) {
+        if(it->second != nullptr) {
+            int h = it->second->height();
+            if(h > max) {
+                max = h;
+            }
+        }
+    }
+    return max + 1;
 }
 
 }

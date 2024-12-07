@@ -17,43 +17,64 @@ DNADatabase::DNADatabase()
 // TODO
 bool DNADatabase::findSequence( std::string sequence ) const
 {
-    bool result = false;
-    return( result );
+    return mTrie.contains(sequence);
 }
 
 // TODO
 bool DNADatabase::addSequence( std::string sequence )
 {
-    bool result = false;
-    return( result );
+    if (!isValid(sequence)) {
+        return false;
+    }
+
+    if (mTrie.contains(sequence)) {
+        return false;
+    }
+    mTrie.insert(sequence);
+    mSequences.push_back(sequence);
+    return true;
 }
 
 // TODO
 bool DNADatabase::isValid( std::string sequence ) const
 {
-    bool result = false;
-    return( result );
+    for (char c : sequence) {
+        if (c != 'A' && c != 'C' && c != 'G' && c != 'T') {
+            return false;
+        }
+    }
+    return !sequence.empty();
 }
 
 // TODO
 int  DNADatabase::size() const
 {
-    int result = -1;
-    return( result );
+    return mTrie.size();
 }
 
 // TODO
 int  DNADatabase::height() const
 {
-    int result = -1;
-    return( result );
+    return mTrie.height();
 }
 
 // TODO
-int  DNADatabase::countAllGs() const
+int DNADatabase::countAllGs() const
 {
-    int result = -1;
-    return( result );
+    int count = 0;
+    for (const std::string& seq : mSequences) {
+        bool isAllG = true;
+        for (char c : seq) {
+            if (c != 'G') {
+                isAllG = false;
+                break;
+            }
+        }
+        if (isAllG) {
+            count++;
+        }
+    }
+    return count;
 }
 
 }

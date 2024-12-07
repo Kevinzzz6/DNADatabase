@@ -35,7 +35,18 @@ Trie::~Trie()
 // the ending TrieNode should be marked with an EndOfWord value that is true
 void Trie::insert( std::string word )
 {
-
+    TrieNode* current = mRoot;
+    for (int i = 0; i < word.length(); i++)
+    {
+        char c = word[i];
+        if (!current->dataExists(c))
+        {
+            TrieNode* newNode = new TrieNode();
+            current->setMapNode(c, newNode);
+        }
+        current = current->find(c)->second;
+    }
+    current->setEndOfWord();
 }
 
 // TODO
@@ -44,11 +55,21 @@ void Trie::insert( std::string word )
 // and in addition the last letter should be marked with an EndOfWord value that is true
 bool Trie::contains( std::string word ) const
 {
-    bool result = false;
+    TrieNode* current = mRoot;
+    for (int i = 0; i < word.length(); i++)
+    {
+        char c = word[i];
+        if (!current->dataExists(c))
+        {
+            return false;
+        }
+        current = current->find(c)->second;
+    }
+    return current->isEndOfWord();
     
     // Starting from the root, traverse nodes for each char in the string.
 
-    return( result );
+    
 }
 
 // TODO
@@ -56,11 +77,20 @@ bool Trie::contains( std::string word ) const
 // each letter should be found in nextNodeMap value of a TrieNode hanging off the root of this Trie
 bool Trie::prefixExists( std::string prefix ) const
 {
-    bool result = false;
+    TrieNode* current = mRoot;
     
     // Starting from the root, traverse nodes for each char in the string.
+    for (int i = 0; i < prefix.length(); i++)
+    {
+        char c = prefix[i];
+        if (!current->dataExists(c))
+        {
+            return false;
+        }
+        current = current->find(c)->second;
+    }  
+    return true;
     
-    return( result );
 }
 
 // stringify this Trie and all of its TrieNodes
@@ -78,18 +108,16 @@ std::string Trie::to_string() const
 // how many nodes in this Trie have an EndOfWord value that is true
 int  Trie::howManyWords() const
 {
-    int result = -1;
     // how many words are there in this trie?
-    return( result );
+    return mRoot->howManyWords();
 }
 
 // TODO
 // how many nodes in this Trie have an EndOfWord value that is false
 int  Trie::howManyNonWords() const
 {
-    int result = -1;
     // how many nonwords are there in this trie?
-    return( result );
+    return mRoot->howManyNonWords();
 }
 
 // TODO
@@ -97,9 +125,8 @@ int  Trie::howManyNonWords() const
 // how many nodes are there in this Trie?
 int  Trie::size() const
 {
-    int result = -1;
     // how many nodes are there in this trie?
-    return( result );
+    return mRoot->size();
 }
 
 // TODO
@@ -107,9 +134,8 @@ int  Trie::size() const
 // how far away is the further away leaf in this Trie?
 int  Trie::height() const
 {
-    int result = -1;
     // how far away is the further away leaf in this trie?
-    return( result );
+    return mRoot->height();
 }
 
 }
